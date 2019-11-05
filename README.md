@@ -1,0 +1,1 @@
+Check this out https://github.com/aws-samples/aws-device-farm-appium-tests-for-sample-app
