@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Sample" verbose="10" >
+    <test name="Movie App Test" >
+        <classes>
+            <class name="tests.MovieAppTest">
+                <methods>
+                    <include name="tapTest" />
+                    <include name="failTest" />
+                    <include name="listTest" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

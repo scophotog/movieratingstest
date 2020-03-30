@@ -1,46 +1,61 @@
 package pages;
 
+import io.appium.java_client.AppiumFluentWait;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.pagefactory.AndroidFindBy;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import util.ExpectedMobileElementConditions;
 
+import java.time.Duration;
 import java.util.List;
 
 public class MovieListPage extends BasePage {
 
-    @AndroidFindBy(xpath = "//android.view.ViewGroup[@resource-id='org.sco.movieratings:id/toolbar']/android.widget.TextView")
-    public AndroidElement titleBar;
-
     @AndroidFindBy(id = "org.sco.movieratings:id/bn_my_favorites")
-    public AndroidElement favoritesButton;
+    private AndroidElement favoritesButton;
 
     @AndroidFindBy(id = "org.sco.movieratings:id/bn_top_rated")
-    public AndroidElement topRatedButton;
+    private AndroidElement topRatedButton;
 
     @AndroidFindBy(id = "org.sco.movieratings:id/bn_most_popular")
-    public AndroidElement popularButton;
+    private AndroidElement popularButton;
 
-    @AndroidFindBy(xpath = "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout")
-    public List<AndroidElement> movielist;
+    @AndroidFindBy(id = "org.sco.movieratings:id/posterLayout")
+    private List<AndroidElement> movielist;
+
+    private TitleBar titleBar;
 
     public MovieListPage(AndroidDriver<AndroidElement> driver) {
         super(driver);
     }
 
-    public void waitForList() {
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                return !movielist.isEmpty();
-            }
-        });
+    public void tapPopularMovies() {
+        popularButton.click();
+        waitForList();
+    }
+
+    public void tapTopMovies() {
+        topRatedButton.click();
+        waitForList();
+    }
+
+    public void tapFavoriteMovies() {
+        favoritesButton.click();
+        waitForList();
+    }
+
+    private void waitForList() {
+        new AppiumFluentWait<>(movielist)
+                .withTimeout(Duration.ofSeconds(3L))
+                .until(ExpectedMobileElementConditions.elementListIsNotEmpty());
+    }
+
+    public void getMovieDetails(final int index) {
+        movielist.get(index).click();
+        titleBar.waitForTitleToBe("Movie Details");
     }
 
     public String getTitleText() {
-        return titleBar.getText();
+        return titleBar.getTitleText();
     }
 }
