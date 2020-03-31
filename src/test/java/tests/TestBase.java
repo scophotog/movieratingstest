@@ -13,6 +13,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import util.Constants;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,14 +38,16 @@ public abstract class TestBase {
 
     @BeforeMethod
     public void startRecording() {
-        driver.startRecordingScreen(new AndroidStartScreenRecordingOptions().enableBugReport());
+        System.out.println("Screen recording start");
+        final String something = driver.startRecordingScreen(new AndroidStartScreenRecordingOptions().enableBugReport());
+        System.out.println("This is something");
+        System.out.println(something);
     }
 
     @AfterMethod
     public void saveRecordingOnFailure(final ITestResult result) throws IOException {
         if (!result.isSuccess()) {
-            Reporter.setCurrentTestResult(result);
-            saveScreenRecording(result.getMethod().getMethodName());
+            saveScreenRecording(result);
         }
     }
 
@@ -58,12 +61,19 @@ public abstract class TestBase {
         driver.quit();
     }
 
-    public void saveScreenRecording(final String testName) throws IOException {
+    public void saveScreenRecording(final ITestResult result) throws IOException {
         final byte[] data = Base64.decodeBase64(driver.stopRecordingScreen());
         if (data.length > 0) {
-            final String htmlDestination = "video/" + testName + System.currentTimeMillis() + ".mp4";
-            final String destination = "test-output/" + htmlDestination;
-            Path path = Paths.get(destination);
+            Reporter.setCurrentTestResult(result);
+            String pathStart = "test-output" + File.separatorChar;
+            final String htmlDestination = "video" + File.separatorChar + result.getMethod().getMethodName() + ".mp4";
+            final String fileDestination = pathStart.concat(htmlDestination);
+            final String directoryName = pathStart.concat("video").concat(String.valueOf(File.separatorChar));
+            // Create directory
+            Path directory = Paths.get(directoryName);
+            Files.createDirectories(directory);
+            //Write File
+            Path path = Paths.get(fileDestination);
             Files.write(path, data);
             String html = "<br><video width=\"480\" height=\"640\" controls>" +
                     "<source src=\"" + htmlDestination + "\" type=\"video/mp4\"></video><br>" +
