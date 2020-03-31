@@ -3,6 +3,8 @@ package tests;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidStartScreenRecordingOptions;
+import io.appium.java_client.events.EventFiringWebDriverFactory;
+import listener.AppiumEventListener;
 import org.apache.commons.codec.binary.Base64;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.ITestResult;
@@ -34,14 +36,12 @@ public abstract class TestBase {
         capabilities.setCapability("appActivity",".activity.MainActivity");
         capabilities.setCapability("appPackage","org.sco.movieratings");
         driver = new AndroidDriver<>(Objects.requireNonNull(Constants.getAppiumUrl()), capabilities);
+        driver = EventFiringWebDriverFactory.getEventFiringWebDriver(driver, new AppiumEventListener());
     }
 
     @BeforeMethod
     public void startRecording() {
-        System.out.println("Screen recording start");
-        final String something = driver.startRecordingScreen(new AndroidStartScreenRecordingOptions().enableBugReport());
-        System.out.println("This is something");
-        System.out.println(something);
+        driver.startRecordingScreen(new AndroidStartScreenRecordingOptions().enableBugReport());
     }
 
     @AfterMethod

@@ -2,10 +2,14 @@ package util;
 
 import io.appium.java_client.MobileElement;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class ExpectedMobileElementConditions {
+
+    private static Logger log = LoggerFactory.getLogger(ExpectedMobileElementConditions.class);
 
     private ExpectedMobileElementConditions() {}
 
@@ -26,6 +30,7 @@ public class ExpectedMobileElementConditions {
                     String elementText = mobileElement.getText();
                     return elementText.contains(text);
                 } catch (StaleElementReferenceException e) {
+                    log.debug("StaleElementReferenceException");
                     return null;
                 }
             }
