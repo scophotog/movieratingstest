@@ -7,7 +7,6 @@ import pages.MovieDetailPage;
 import pages.MovieListPage;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
 
 public class MovieAppTest extends TestBase {
 
@@ -37,15 +36,14 @@ public class MovieAppTest extends TestBase {
         movieListPage.tapTopMovies();
         assertEquals(movieListPage.getTitleText(), "Movie Ratings Top Rated");
         movieListPage.tapPopularMovies();
-        assertEquals(movieListPage.getTitleText(), "Movie Ratings Most Popular");
-        fail("whups");
+        assertEquals(movieListPage.getTitleText(), "Movie Ratings Least Popular");
     }
 
     @Test
     public void listTest() {
         final String currentTitle = movieListPage.getTitleText();
         movieListPage.getMovieDetails(0);
-        assertEquals(movieDetailPage.getTitleText(), "Movie Derptails");
+        assertEquals(movieDetailPage.getTitleText(), "Movie Details");
         driver.pressKey(new KeyEvent().withKey(AndroidKey.BACK));
         assertEquals(currentTitle, movieListPage.getTitleText());
     }
